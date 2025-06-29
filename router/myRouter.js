@@ -1,5 +1,20 @@
 const express = require('express')
 const router = express.Router()
+const Product = require('../models/product')
+const multer = require('multer')
+
+const storage = multer.diskStorage({
+    destination:function(req,file,cb) {
+        cb(null,'./public/images/products')
+    },
+    filename:function(req,file,cb){
+        cb(null,Date.now()+".jpg")
+    }
+})
+
+const upload = multer({
+    storage:storage
+})
 
 router.get('/',(req,res)=>{
     const product =[{name:"apple",price:100,image:"images/products/product1.png"}
@@ -15,6 +30,20 @@ router.get('/addForm',(req,res)=>{
 router.get('/manage',(req,res)=>{
     res.render('manage.ejs')
 })
+router.post('/insert', upload.single('image'), (req, res) => {
+    console.log(req.file)
+    // let data = new Product({
+    //     name:req.body.name,
+    //     price:req.body.price,
+    //     image:req.body.image,
+    //     description:req.body.description
+    // })
+    // Product.saveProduct(data,(err)=>{
+    //     if (err) console.log(err)
+    // })
+    // res.redirect('/')
+})
+
 
 
 module.exports = router
