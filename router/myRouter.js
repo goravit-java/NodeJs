@@ -16,32 +16,41 @@ const upload = multer({
     storage:storage
 })
 
-router.get('/',(req,res)=>{
-    const product =[{name:"apple",price:100,image:"images/products/product1.png"}
-        ,{name:"banana",price:50,image:"images/products/product2.png"},
-        {name:"orange",price:80,image:"images/products/product3.png"}]
-    const address = "<h1>helloWorld</h1>"
-    res.render('index.ejs',{address:address,product:product})
+router.get('/',async (req,res)=>{
+    try {
+        const doc = await Product.find();
+        res.render('index', { product: doc });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('เกิดข้อผิดพลาด');
+    }   
 })
 
 router.get('/addForm',(req,res)=>{
     res.render('form.ejs')
 })
-router.get('/manage',(req,res)=>{
-    res.render('manage.ejs')
+router.get('/manage',async(req,res)=>{
+    try {
+        const doc = await Product.find();
+        res.render('manage.ejs',{ product: doc })
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('เกิดข้อผิดพลาด');
+    }  
+    
 })
-router.post('/insert', upload.single('image'), (req, res) => {
-    console.log(req.file)
-    // let data = new Product({
-    //     name:req.body.name,
-    //     price:req.body.price,
-    //     image:req.body.image,
-    //     description:req.body.description
-    // })
-    // Product.saveProduct(data,(err)=>{
-    //     if (err) console.log(err)
-    // })
-    // res.redirect('/')
+router.post('/insert', upload.single('image'),(req, res) => {
+    
+    let data = new Product({
+        name:req.body.name,
+        price:req.body.price,
+        image:req.file.filename,
+        description:req.body.description
+    })
+    Product.saveProduct(data,(err)=>{
+        if (err) console.log(err)
+    })
+    res.redirect('/')
 })
 
 
