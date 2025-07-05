@@ -14,6 +14,7 @@
         <%-include('navbar')%>
         <div class="container">
             <h2>จัดการสินค้า</h2>
+            <p><a href="/logout">logout</a></p>
             <p>เพิ่ม ลบ แก้ไขข้อมูลในฐานข้อมูล</p>            
             <table class="table table-bordered">
                 <thead>
@@ -31,8 +32,13 @@
                         <td><%=item.name%></td>
                         <td><%=item.price%> บาท</td>
                         <td><%= item.description%></td>
-                        <td><button class="btn btn-danger">ลบ</button></td>
-                        <td><button class="btn btn-primary">แก้ไข</button></td>
+                        <td><a class="btn btn-danger" href="/delete/<%=item._id%>" onclick="return confirm('are you sure')">ลบ</a></td>
+                        <td>
+                            <form action="/edite" method="POST">
+                                <input type="hidden" name="edite_id" value="<%=item._id%>" id="">
+                                <button type="submit" class="btn btn-primary">แก้ไข</button>
+                            </form>
+                        </td>
                     </tr>
                     <%})%>
                 </tbody>
